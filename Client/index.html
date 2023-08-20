@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Form</title>
+</head>
+<body>
+    <form id="parameterForm">
+        <label for="param1">Parameter 1:</label>
+        <input type="text" id="param1" name="param1"><br><br>
+
+        <label for="param2">Parameter 2:</label>
+        <input type="text" id="param2" name="param2"><br><br>
+
+        <label for="param3">Parameter 3:</label>
+        <input type="text" id="param3" name="param3"><br><br>
+
+        <label for="param4">Parameter 4:</label>
+        <input type="text" id="param4" name="param4"><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        document.getElementById("parameterForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const params = {};
+
+            formData.forEach((value, key) => {
+                if (value.trim() !== "") {
+                    params[key] = value;
+                }
+            });
+
+            console.log("Submitted Parameters:", params);
+            // You can perform further actions with the submitted parameters here
+        });
+    </script>
+</body>
+</html>
