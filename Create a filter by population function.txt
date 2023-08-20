@@ -1,0 +1,50 @@
+C#: Create a function that accepts a number as an attribute and can filter by ` population `. 
+The filter should search for countries where the population is less than provided number from attributes in the millions of people (e.g., by providing value `10`, I should find countries with a population less than 10m)
+ChatGPT
+
+Sure, here's an example of a C# function that filters countries based on population:
+
+csharp
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Country
+{
+    public string Name { get; set; }
+    public double Population { get; set; }
+}
+
+public class Program
+{
+    public static List<Country> FilterCountriesByPopulation(List<Country> countries, double maxPopulation)
+    {
+        List<Country> filteredCountries = countries.Where(country => country.Population < maxPopulation).ToList();
+        return filteredCountries;
+    }
+
+    public static void Main(string[] args)
+    {
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = "USA", Population = 331.0 },
+            new Country { Name = "China", Population = 1441.0 },
+            new Country { Name = "India", Population = 1393.0 },
+            new Country { Name = "Brazil", Population = 211.0 },
+            // Add more countries...
+        };
+
+        double maxPopulation = 10.0; // You can change this value as needed
+
+        List<Country> filteredCountries = FilterCountriesByPopulation(countries, maxPopulation);
+
+        Console.WriteLine($"Countries with population less than {maxPopulation} million:");
+        foreach (var country in filteredCountries)
+        {
+            Console.WriteLine($"{country.Name} - {country.Population} million");
+        }
+    }
+}
+
+In this example, the FilterCountriesByPopulation function accepts a list of Country objects and a maximum population value. It filters the countries based on the provided condition and returns a list of filtered countries. The Main method demonstrates how to use this function by creating a list of countries and then filtering them based on a maximum population value. You can modify the maxPopulation value to see different results.

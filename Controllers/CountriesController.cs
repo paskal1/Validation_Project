@@ -45,7 +45,13 @@ namespace Validation_Project.Controllers
             }
         }
 
-        private static List<Country> FilterCountries(List<Country> countries, string searchString)
+        /// <summary>
+        /// Returns a list of countries filtered by name.
+        /// </summary>
+        /// <param name="countries">Target countries list.</param>
+        /// <param name="searchString">Country name criteria.</param>
+        /// <returns>A list of countries filtered by name.</returns>
+        private static List<Country> FilterByName(List<Country> countries, string searchString)
         {
             string searchLower = searchString.ToLower(CultureInfo.InvariantCulture);
             return countries
@@ -53,6 +59,19 @@ namespace Validation_Project.Controllers
                     country.Name.ToLower(CultureInfo.InvariantCulture).Contains(searchLower) ||
                     country.CommonName.ToLower(CultureInfo.InvariantCulture).Contains(searchLower))
                 .ToList();
+        }
+
+        /// <summary>
+        /// Returns a list of countries filtered by population.
+        /// </summary>
+        /// <param name="countries">Target countries list.</param>
+        /// <param name="maxPopulation">Country population criteria.</param>
+        /// <returns>A list of countries filtered by population.</returns>
+        /// <remarks>A value of <paramref name="maxPopulation"/> is specified in millions (e.g., by providing value `10`, method will return countries with a population less than 10m).</remarks>
+        private static List<Country> FilterByPopulation(List<Country> countries, double maxPopulation)
+        {
+            List<Country> filteredCountries = countries.Where(country => country.Population < maxPopulation).ToList();
+            return filteredCountries;
         }
     }
 }

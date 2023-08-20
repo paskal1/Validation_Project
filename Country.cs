@@ -17,5 +17,10 @@
         /// Name: United States; Common Name - USA.
         /// </example>
         public string CommonName { get; set; }
+
+        /// <summary>
+        /// Population of the country.
+        /// </summary>
+        public double Population { get; set; }
     }
 }
