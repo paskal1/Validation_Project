@@ -21,6 +21,7 @@
         public static class Exceptions
         {
             public const string InvalidSortOrder = "Invalid sort order. Please provide 'ascend' or 'descend'!";
+            public const string InvalidLimitNumber = "Limit must be a positive integer.";
         }
     }
 }

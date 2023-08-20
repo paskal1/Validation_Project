@@ -18,7 +18,7 @@ namespace Validation_Project.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Get([FromQuery] string? param1 = null, [FromQuery] int? param2 = null, [FromQuery] string? param3 = null, [FromQuery] string? param4 = null)
+        public async Task<ActionResult> Get([FromQuery] string? country = null, [FromQuery] int? maxPopulation = null, [FromQuery] string? param3 = null, [FromQuery] string? param4 = null)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace Validation_Project.Controllers
         /// <param name="maxPopulation">Country population criteria.</param>
         /// <returns>A list of countries filtered by population.</returns>
         /// <remarks>A value of <paramref name="maxPopulation"/> is specified in millions (e.g., by providing value `10`, method will return countries with a population less than 10m).</remarks>
-        private static List<Country> FilterByPopulation(List<Country> countries, double maxPopulation)
+        private static List<Country> FilterByPopulation(List<Country> countries, int maxPopulation)
         {
             List<Country> filteredCountries = countries.Where(country => country.Population < maxPopulation * 1000000).ToList();
             return filteredCountries;
@@ -84,6 +84,21 @@ namespace Validation_Project.Controllers
                 return countries.OrderByDescending(country => country.CommonName).ToList();
             
             throw new ArgumentException(Constants.Exceptions.InvalidSortOrder);
+        }
+
+        /// <summary>
+        /// Returns a list of countries limited by <paramref name="limit"/>.
+        /// </summary>
+        /// <param name="countries">Target countries list.</param>
+        /// <param name="limit">Returned countries are limited by this parameter.</param>
+        /// <returns>A list of countries limited by <paramref name="limit"/>.</returns>
+        /// <exception cref="ArgumentException"></exception>
+        private static List<Country> GetLimitedCountries(List<Country> countries, int limit)
+        {
+            if (limit <= 0)
+                throw new ArgumentException(Constants.Exceptions.InvalidLimitNumber);
+
+            return countries.Take(limit).ToList();
         }
     }
 }

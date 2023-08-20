@@ -1,0 +1,44 @@
+C# Create a function that accepts numbers as an attribute and can limit the number of records. 
+The functionality should accept a number and retrieve first n records (e.g., providing number `15` I should receive 15 first records from list). 
+ChatGPT
+
+Certainly! Here's an example of a C# function that accepts a list of numbers and a limit, and then retrieves the first 'n' records from the list:
+
+csharp
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public static class NumberListUtils
+{
+    public static List<int> GetFirstNRecords(List<int> numbers, int n)
+    {
+        if (n <= 0)
+        {
+            throw new ArgumentException("Limit must be a positive integer.");
+        }
+
+        return numbers.Take(n).ToList();
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<int> numberList = new List<int> { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+
+        int limit = 5;
+
+        List<int> firstNRecords = NumberListUtils.GetFirstNRecords(numberList, limit);
+
+        Console.WriteLine($"First {limit} Records:");
+        foreach (var number in firstNRecords)
+        {
+            Console.WriteLine(number);
+        }
+    }
+}
+
+In this example, the NumberListUtils class contains the utility method GetFirstNRecords which retrieves the first 'n' records from the list of numbers. The Main method demonstrates how to use the utility function. Change the value of the limit variable to specify a different number of records you want to retrieve.
