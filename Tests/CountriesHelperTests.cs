@@ -47,18 +47,16 @@ namespace Validation_Project.Tests
         }
 
         [Fact]
-        public void FilterByName_WhenListIsNullOrEmpty_MustThrowException()
+        public void FilterByName_WhenListIsNull_MustThrowException()
         {
             // Arrange
             List<Country> countries = null;
 
             // Act
             var filterCountries1 = () => CountriesHelper.FilterByName(countries, "_");
-            var filterCountries2 = () => CountriesHelper.FilterByName(new List<Country>(), "_");
 
             // Assert
             Assert.Throws<ArgumentNullException>(filterCountries1);
-            Assert.Throws<ArgumentNullException>(filterCountries2);
         }
 
         [Fact]
@@ -107,18 +105,16 @@ namespace Validation_Project.Tests
         }
 
         [Fact]
-        public void FilterByPopulation_WhenListIsNullOrEmpty_ThrowsException()
+        public void FilterByPopulation_WhenListIsNull_ThrowsException()
         {
             // Arrange
             List<Country> countries = null;
 
             // Act
             var filterCountries1 = () => CountriesHelper.FilterByPopulation(countries, 10);
-            var filterCountries2 = () => CountriesHelper.FilterByPopulation(new List<Country>(), 10);
 
             // Assert
             Assert.Throws<ArgumentNullException>(filterCountries1);
-            Assert.Throws<ArgumentNullException>(filterCountries2);
         }
         #endregion
 
@@ -165,18 +161,16 @@ namespace Validation_Project.Tests
         }
 
         [Fact]
-        public void SortByName_WhenCountriesAreNullOrEmpty_ThrowsException()
+        public void SortByName_WhenCountriesAreNull_ThrowsException()
         {
             // Arrange
             List<Country> countries = null;
 
             // Act
             var filterCountries1 = () => CountriesHelper.SortByName(countries, "descend");
-            var filterCountries2 = () => CountriesHelper.SortByName(new List<Country>(), "descend");
 
             // Assert
             Assert.Throws<ArgumentNullException>(filterCountries1);
-            Assert.Throws<ArgumentNullException>(filterCountries2);
         }
         #endregion
 
@@ -213,18 +207,16 @@ namespace Validation_Project.Tests
         }
 
         [Fact]
-        public void GetByLimit_WhenCountriesAreNullOrEmpty_ThrowsException()
+        public void GetByLimit_WhenCountriesAreNull_ThrowsException()
         {
             // Arrange
             List<Country> countries = null;
 
             // Act
             var filterCountries1 = () => CountriesHelper.GetByLimit(countries, 1);
-            var filterCountries2 = () => CountriesHelper.GetByLimit(new List<Country>(), 1);
 
             // Assert
             Assert.Throws<ArgumentNullException>(filterCountries1);
-            Assert.Throws<ArgumentNullException>(filterCountries2);
         }
         #endregion
     }

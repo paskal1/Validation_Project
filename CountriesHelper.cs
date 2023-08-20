@@ -72,7 +72,7 @@ namespace Validation_Project
 
         private static void ValidateList(List<Country> countries)
         {
-            if (countries is null || !countries.Any())
+            if (countries is null)
                 throw new ArgumentNullException(nameof(countries));
         }
     }
