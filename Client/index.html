@@ -1,41 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Simple Form</title>
+    <title>Countries list</title>
 </head>
 <body>
-    <form id="parameterForm">
-        <label for="param1">Parameter 1:</label>
-        <input type="text" id="param1" name="param1"><br><br>
+    <form id="countriesForm">
+        <label for="country">Country name:</label>
+        <input type="text" id="country" name="country"><br><br>
 
-        <label for="param2">Parameter 2:</label>
-        <input type="text" id="param2" name="param2"><br><br>
+        <label for="maxPopulation">Max population (in millions):</label>
+        <input type="number" id="maxPopulation" name="maxPopulation">m<br><br>
 
-        <label for="param3">Parameter 3:</label>
-        <input type="text" id="param3" name="param3"><br><br>
+        <label for="sortOrder">Order of sorting:</label>
+        <select id="sortOrder" name="sortOrder">
+            <option value="ascend">Ascend</option>
+            <option value="descend">Descend</option>
+        </select>
+        <br/><br/>
 
-        <label for="param4">Parameter 4:</label>
-        <input type="text" id="param4" name="param4"><br><br>
+        <label for="limit">Countries limit:</label>
+        <input type="number" id="limit" name="limit"><br><br>
 
         <input type="submit" value="Submit">
     </form>
 
+    <h2>Countries:</h2>
+    <ul id="countriesResponse"></ul>
+
     <script>
-        document.getElementById("parameterForm").addEventListener("submit", function(event) {
+        const form = document.getElementById("countriesForm");
+        const responseList = document.getElementById("countriesResponse");
+        const endpointAddress = "https://localhost:44339/api/countries";
+
+        form.addEventListener("submit", async (event) => {
             event.preventDefault();
 
-            const form = event.target;
             const formData = new FormData(form);
-            const params = {};
+            const params = new URLSearchParams(formData);
 
-            formData.forEach((value, key) => {
-                if (value.trim() !== "") {
-                    params[key] = value;
+            try {
+                const response = await fetch(`${endpointAddress}?${params.toString()}`, {
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+
+                    // Clear previous response
+                    responseList.innerHTML = '';
+
+                    // Display response in a list
+                    for (const country of responseData) {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `Name: ${country.name}, Population: ${country.population}`;
+                        responseList.appendChild(listItem);
+                    }
+                } else {
+                    console.error('Error fetching data from the server.');
                 }
-            });
-
-            console.log("Submitted Parameters:", params);
-            // You can perform further actions with the submitted parameters here
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
         });
     </script>
 </body>

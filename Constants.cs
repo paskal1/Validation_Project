@@ -12,7 +12,7 @@
         {
             public const string HttpClientName = nameof(RestCountries);
             public const string BaseAddress = "https://restcountries.com/v3.1";
-            public const string All = $"{BaseAddress}/all";
+            public const string All = $"{BaseAddress}/all?fields=name,population";
         }
 
         /// <summary>

@@ -1,0 +1,72 @@
+HTML5: Write a page that has a form with parameters. After the form is submitted, response from the server must be displayed on that page in form of list.
+Note: request to the server must be of type GET
+ChatGPT
+
+Sure, here's an example of an HTML5 page that includes a form. When the form is submitted using a GET request, the response from the server will be displayed on the same page in the form of a list:
+
+html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Example</title>
+</head>
+<body>
+    <h1>Form Example</h1>
+    
+    <form id="dataForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+        
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required><br><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Response:</h2>
+    <ul id="responseList"></ul>
+
+    <script>
+        const form = document.getElementById('dataForm');
+        const responseList = document.getElementById('responseList');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
+
+            try {
+                const response = await fetch(`server-endpoint-url?${params.toString()}`, {
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+
+                    // Clear previous response
+                    responseList.innerHTML = '';
+
+                    // Display response in a list
+                    for (const key in responseData) {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${key}: ${responseData[key]}`;
+                        responseList.appendChild(listItem);
+                    }
+                } else {
+                    console.error('Error fetching data from the server.');
+                }
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
+        });
+    </script>
+</body>
+</html>
+
+In this example, replace 'server-endpoint-url' with the actual URL of your server endpoint that handles the GET request and returns a JSON response.
+
+When the form is submitted, the JavaScript code fetches the server's response using the provided parameters, and then dynamically creates list items to display the response data on the page.
