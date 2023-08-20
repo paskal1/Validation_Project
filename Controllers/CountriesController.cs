@@ -18,11 +18,7 @@ namespace Validation_Project.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Get(
-            [FromQuery] string? param1 = null,
-            [FromQuery] int? param2 = null,
-            [FromQuery] string? param3 = null,
-            [FromQuery] string? param4 = null)
+        public async Task<ActionResult> Get([FromQuery] string? param1 = null, [FromQuery] int? param2 = null, [FromQuery] string? param3 = null, [FromQuery] string? param4 = null)
         {
             try
             {
@@ -70,8 +66,24 @@ namespace Validation_Project.Controllers
         /// <remarks>A value of <paramref name="maxPopulation"/> is specified in millions (e.g., by providing value `10`, method will return countries with a population less than 10m).</remarks>
         private static List<Country> FilterByPopulation(List<Country> countries, double maxPopulation)
         {
-            List<Country> filteredCountries = countries.Where(country => country.Population < maxPopulation).ToList();
+            List<Country> filteredCountries = countries.Where(country => country.Population < maxPopulation * 1000000).ToList();
             return filteredCountries;
+        }
+
+        /// <summary>
+        /// Returns a list of countries sorted by name/common according to <paramref name="sortOrder"/>.
+        /// </summary>
+        /// <param name="countries">Target countries list.</param>
+        /// <param name="sortOrder">Order of sorting. Must be <see langword="ascend"/> or <see langword="descend"/>.</param>
+        /// <returns>A list of countries sorted by <paramref name="sortOrder"/>.</returns>
+        private static List<Country> SortByAscDesc(List<Country> countries, string sortOrder)
+        {
+            if (sortOrder.Equals("ascend", StringComparison.OrdinalIgnoreCase))
+                return countries.OrderBy(country => country.CommonName).ToList();
+            else if (sortOrder.Equals("descend", StringComparison.OrdinalIgnoreCase))
+                return countries.OrderByDescending(country => country.CommonName).ToList();
+            
+            throw new ArgumentException(Constants.Exceptions.InvalidSortOrder);
         }
     }
 }

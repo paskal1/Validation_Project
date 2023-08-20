@@ -1,0 +1,68 @@
+C# Create a function that accepts a string as an attribute and can sort data by ` name/common `. 
+The sort should accept string ` ascend or descend ` and sort countries name by provided attribute (e.g. providing attribute ascend all countries should be sorted from A to Z)
+ChatGPT
+
+Sure, here's an example of a C# function that accepts a list of countries with their names and a sorting order attribute, and then sorts the countries by name accordingly:
+
+csharp
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Country
+{
+    public string Name { get; set; }
+    public string CommonName { get; set; }
+}
+
+public static class CountrySorter
+{
+    public static List<Country> SortCountries(List<Country> countries, string attribute, string sortOrder)
+    {
+        if (attribute != "name/common")
+        {
+            throw new ArgumentException("Invalid attribute. Please provide 'name/common'.");
+        }
+
+        if (sortOrder != "ascend" && sortOrder != "descend")
+        {
+            throw new ArgumentException("Invalid sortOrder. Please provide 'ascend' or 'descend'.");
+        }
+
+        if (sortOrder == "ascend")
+        {
+            return countries.OrderBy(country => country.CommonName).ToList();
+        }
+        else
+        {
+            return countries.OrderByDescending(country => country.CommonName).ToList();
+        }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = "Canada", CommonName = "Canada" },
+            new Country { Name = "United States", CommonName = "USA" },
+            new Country { Name = "Mexico", CommonName = "Mexico" }
+        };
+
+        string attribute = "name/common";
+        string sortOrder = "ascend";
+
+        List<Country> sortedCountries = CountrySorter.SortCountries(countries, attribute, sortOrder);
+
+        Console.WriteLine("Sorted Countries:");
+        foreach (var country in sortedCountries)
+        {
+            Console.WriteLine(country.CommonName);
+        }
+    }
+}
+
+In this example, the Country class represents the country information. The CountrySorter class contains the sorting logic. You can change the values of attribute and sortOrder variables to specify different sorting criteria. The SortCountries method sorts the countries based on the provided attribute and sorting order.

@@ -14,5 +14,13 @@
             public const string BaseAddress = "https://restcountries.com/v3.1";
             public const string All = $"{BaseAddress}/all";
         }
+
+        /// <summary>
+        /// Represents a set of exception messages.
+        /// </summary>
+        public static class Exceptions
+        {
+            public const string InvalidSortOrder = "Invalid sort order. Please provide 'ascend' or 'descend'!";
+        }
     }
 }
