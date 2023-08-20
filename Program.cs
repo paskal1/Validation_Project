@@ -1,4 +1,4 @@
-using Validation_Project.Controllers;
+using Validation_Project;
 
 var builder = WebApplication.CreateBuilder(args);
 

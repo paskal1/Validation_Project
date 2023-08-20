@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
 using System.Text.Json;
 
 namespace Validation_Project.Controllers
@@ -38,13 +37,13 @@ namespace Validation_Project.Controllers
                     List<Country> countries = JsonSerializer.Deserialize<List<Country>>(countriesJson, serializerOptions);
 
                     if (!string.IsNullOrWhiteSpace(country))
-                        countries = FilterByName(countries, country);
+                        countries = CountriesHelper.FilterByName(countries, country);
                     if (maxPopulation.HasValue)
-                        countries = FilterByPopulation(countries, maxPopulation.Value);
+                        countries = CountriesHelper.FilterByPopulation(countries, maxPopulation.Value);
                     if (limit.HasValue)
-                        countries = GetByLimit(countries, limit.Value);
+                        countries = CountriesHelper.GetByLimit(countries, limit.Value);
                     if (!string.IsNullOrWhiteSpace(sortOrder))
-                        countries = SortByAscDesc(countries, sortOrder);
+                        countries = CountriesHelper.SortByName(countries, sortOrder);
 
                     return Ok(countries);
                 }
@@ -57,62 +56,6 @@ namespace Validation_Project.Controllers
             {
                 return StatusCode(500);
             }
-        }
-
-        /// <summary>
-        /// Returns a list of countries filtered by name.
-        /// </summary>
-        /// <param name="countries">Target countries list.</param>
-        /// <param name="searchString">Country name criteria.</param>
-        /// <returns>A list of countries filtered by name.</returns>
-        private static List<Country> FilterByName(List<Country> countries, string searchString)
-        {
-            string searchLower = searchString.ToLower(CultureInfo.InvariantCulture);
-            return countries.Where(country => country.Name.ToLower(CultureInfo.InvariantCulture).Contains(searchLower)).ToList();
-        }
-
-        /// <summary>
-        /// Returns a list of countries filtered by population.
-        /// </summary>
-        /// <param name="countries">Target countries list.</param>
-        /// <param name="maxPopulation">Country population criteria.</param>
-        /// <returns>A list of countries filtered by population.</returns>
-        /// <remarks>A value of <paramref name="maxPopulation"/> is specified in millions (e.g., by providing value `10`, method will return countries with a population less than 10m).</remarks>
-        private static List<Country> FilterByPopulation(List<Country> countries, int maxPopulation)
-        {
-            List<Country> filteredCountries = countries.Where(country => country.Population < maxPopulation * 1000000).ToList();
-            return filteredCountries;
-        }
-
-        /// <summary>
-        /// Returns a list of countries sorted by name according to <paramref name="sortOrder"/>.
-        /// </summary>
-        /// <param name="countries">Target countries list.</param>
-        /// <param name="sortOrder">Order of sorting. Must be <see langword="ascend"/> or <see langword="descend"/>.</param>
-        /// <returns>A list of countries sorted by <paramref name="sortOrder"/>.</returns>
-        private static List<Country> SortByAscDesc(List<Country> countries, string sortOrder)
-        {
-            if (sortOrder.Equals("ascend", StringComparison.OrdinalIgnoreCase))
-                return countries.OrderBy(country => country.Name).ToList();
-            else if (sortOrder.Equals("descend", StringComparison.OrdinalIgnoreCase))
-                return countries.OrderByDescending(country => country.Name).ToList();
-            
-            throw new ArgumentException(Constants.Exceptions.InvalidSortOrder);
-        }
-
-        /// <summary>
-        /// Returns a list of countries limited by <paramref name="limit"/>.
-        /// </summary>
-        /// <param name="countries">Target countries list.</param>
-        /// <param name="limit">Returned countries are limited by this parameter.</param>
-        /// <returns>A list of countries limited by <paramref name="limit"/>.</returns>
-        /// <exception cref="ArgumentException"></exception>
-        private static List<Country> GetByLimit(List<Country> countries, int limit)
-        {
-            if (limit <= 0)
-                throw new ArgumentException(Constants.Exceptions.InvalidLimitNumber);
-
-            return countries.Take(limit).ToList();
         }
     }
 }

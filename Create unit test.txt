@@ -1,0 +1,403 @@
+C#: Write a unit tests using XUnit for this method:
+     /// <summary>
+     /// Returns a list of countries filtered by name.
+     /// </summary>
+     /// <param name="countries">Target countries list.</param>
+     /// <param name="searchString">Country name criteria.</param>
+     /// <returns>A list of countries filtered by name.</returns>
+     private static List<Country> FilterByName(List<Country> countries, string searchString)
+     {
+         string searchLower = searchString.ToLower(CultureInfo.InvariantCulture);
+         return countries.Where(country => country.Name.ToLower(CultureInfo.InvariantCulture).Contains(searchLower)).ToList();
+     }
+ChatGPT
+
+Sure! Here's an example of how you can write unit tests for the FilterByName method using xUnit:
+
+csharp
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Xunit;
+
+public class Country
+{
+    public string Name { get; set; }
+}
+
+public class CountryFilterTests
+{
+    private static List<Country> FilterByName(List<Country> countries, string searchString)
+    {
+        string searchLower = searchString.ToLower(CultureInfo.InvariantCulture);
+        return countries.Where(country => country.Name.ToLower(CultureInfo.InvariantCulture).Contains(searchLower)).ToList();
+    }
+
+    [Fact]
+    public void FilterByName_ReturnsMatchingCountries()
+    {
+        // Arrange
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = "Canada" },
+            new Country { Name = "United States" },
+            new Country { Name = "Mexico" },
+            new Country { Name = "Australia" }
+        };
+
+        // Act
+        List<Country> filteredCountries = FilterByName(countries, "united");
+
+        // Assert
+        Assert.Equal(1, filteredCountries.Count);
+        Assert.Equal("United States", filteredCountries[0].Name);
+    }
+
+    [Fact]
+    public void FilterByName_ReturnsEmptyListIfNoMatches()
+    {
+        // Arrange
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = "Canada" },
+            new Country { Name = "United States" },
+            new Country { Name = "Mexico" }
+        };
+
+        // Act
+        List<Country> filteredCountries = FilterByName(countries, "australia");
+
+        // Assert
+        Assert.Empty(filteredCountries);
+    }
+}
+
+In this example, I've created two xUnit test methods within the CountryFilterTests class. The first test, FilterByName_ReturnsMatchingCountries, checks if the method correctly filters and returns a list containing the matching country ("United States" in this case). The second test, FilterByName_ReturnsEmptyListIfNoMatches, verifies that when no matching countries are found, the method returns an empty list.
+
+Remember to adjust the test cases and expected outcomes based on your specific use case.
+User
+C#: Write a unit tests using XUnit for the method FilterByPopulation:
+    /// <summary>
+    /// Returns a list of countries filtered by population.
+    /// </summary>
+    /// <param name="countries">Target countries list.</param>
+    /// <param name="maxPopulation">Country population criteria.</param>
+    /// <returns>A list of countries filtered by population.</returns>
+    /// <remarks>A value of <paramref name="maxPopulation"/> is specified in millions (e.g., by providing value `10`, method will return countries with a population less than 10m).</remarks>
+    public static List<Country> FilterByPopulation(List<Country> countries, int maxPopulation)
+    {
+        ValidateList(countries);
+        List<Country> filteredCountries = countries.Where(country => country.Population < maxPopulation * 1000000).ToList();
+        return filteredCountries;
+    }
+
+ValidateList code:
+   private static void ValidateList(List<Country> countries)
+   {
+       if (countries is null || !countries.Any())
+           throw new ArgumentNullException(nameof(countries));
+   }
+ChatGPT
+
+Certainly! Here's an example of how you can write unit tests for the FilterByPopulation method using xUnit:
+
+csharp
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
+
+public class Country
+{
+    public string Name { get; set; }
+    public int Population { get; set; }
+}
+
+public class CountryFilterTests
+{
+    private static void ValidateList(List<Country> countries)
+    {
+        if (countries is null || !countries.Any())
+            throw new ArgumentNullException(nameof(countries));
+    }
+
+    private static List<Country> FilterByPopulation(List<Country> countries, int maxPopulation)
+    {
+        ValidateList(countries);
+        List<Country> filteredCountries = countries.Where(country => country.Population < maxPopulation * 1000000).ToList();
+        return filteredCountries;
+    }
+
+    [Fact]
+    public void FilterByPopulation_ReturnsMatchingCountries()
+    {
+        // Arrange
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = "Canada", Population = 38 },
+            new Country { Name = "United States", Population = 331 },
+            new Country { Name = "Mexico", Population = 126 }
+        };
+
+        // Act
+        List<Country> filteredCountries = FilterByPopulation(countries, 200); // Population less than 200 million
+
+        // Assert
+        Assert.Equal(2, filteredCountries.Count);
+        Assert.Contains(filteredCountries, country => country.Name == "Canada");
+        Assert.Contains(filteredCountries, country => country.Name == "Mexico");
+    }
+
+    [Fact]
+    public void FilterByPopulation_ThrowsExceptionForEmptyList()
+    {
+        // Arrange
+        List<Country> emptyList = new List<Country>();
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => FilterByPopulation(emptyList, 10));
+    }
+}
+
+In this example, I've created two xUnit test methods within the CountryFilterTests class. The first test, FilterByPopulation_ReturnsMatchingCountries, checks if the method correctly filters and returns a list containing the countries with populations less than the provided limit. The second test, FilterByPopulation_ThrowsExceptionForEmptyList, ensures that an exception is thrown when trying to filter an empty list.
+
+Adjust the test cases and expected outcomes based on your specific use case.
+User
+C#: Write a unit tests using XUnit for the method SortByAscDesc:
+  /// <summary>
+  /// Returns a list of countries sorted by name according to <paramref name="sortOrder"/>.
+  /// </summary>
+  /// <param name="countries">Target countries list.</param>
+  /// <param name="sortOrder">Order of sorting. Must be <see langword="ascend"/> or <see langword="descend"/>.</param>
+  /// <returns>A list of countries sorted by <paramref name="sortOrder"/>.</returns>
+  public static List<Country> SortByAscDesc(List<Country> countries, string sortOrder)
+  {
+      ValidateList(countries);
+      if (sortOrder.Equals("ascend", StringComparison.OrdinalIgnoreCase))
+          return countries.OrderBy(country => country.Name).ToList();
+      else if (sortOrder.Equals("descend", StringComparison.OrdinalIgnoreCase))
+          return countries.OrderByDescending(country => country.Name).ToList();
+
+      throw new ArgumentException(Constants.Exceptions.InvalidSortOrder);
+  }
+
+ValidateList code:
+   private static void ValidateList(List<Country> countries)
+   {
+       if (countries is null || !countries.Any())
+           throw new ArgumentNullException(nameof(countries));
+   }
+ChatGPT
+
+Certainly! Here's an example of how you can write unit tests for the SortByAscDesc method using xUnit:
+
+csharp
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
+
+public class Country
+{
+    public string Name { get; set; }
+}
+
+public static class Constants
+{
+    public static class Exceptions
+    {
+        public const string InvalidSortOrder = "Invalid sort order.";
+    }
+}
+
+public class CountrySortingTests
+{
+    private static void ValidateList(List<Country> countries)
+    {
+        if (countries is null || !countries.Any())
+            throw new ArgumentNullException(nameof(countries));
+    }
+
+    private static List<Country> SortByAscDesc(List<Country> countries, string sortOrder)
+    {
+        ValidateList(countries);
+        if (sortOrder.Equals("ascend", StringComparison.OrdinalIgnoreCase))
+            return countries.OrderBy(country => country.Name).ToList();
+        else if (sortOrder.Equals("descend", StringComparison.OrdinalIgnoreCase))
+            return countries.OrderByDescending(country => country.Name).ToList();
+
+        throw new ArgumentException(Constants.Exceptions.InvalidSortOrder);
+    }
+
+    [Fact]
+    public void SortByAscDesc_SortsAscending()
+    {
+        // Arrange
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = "Canada" },
+            new Country { Name = "United States" },
+            new Country { Name = "Mexico" }
+        };
+
+        // Act
+        List<Country> sortedCountries = SortByAscDesc(countries, "ascend");
+
+        // Assert
+        Assert.Equal("Canada", sortedCountries[0].Name);
+        Assert.Equal("Mexico", sortedCountries[1].Name);
+        Assert.Equal("United States", sortedCountries[2].Name);
+    }
+
+    [Fact]
+    public void SortByAscDesc_SortsDescending()
+    {
+        // Arrange
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = "Canada" },
+            new Country { Name = "United States" },
+            new Country { Name = "Mexico" }
+        };
+
+        // Act
+        List<Country> sortedCountries = SortByAscDesc(countries, "descend");
+
+        // Assert
+        Assert.Equal("United States", sortedCountries[0].Name);
+        Assert.Equal("Mexico", sortedCountries[1].Name);
+        Assert.Equal("Canada", sortedCountries[2].Name);
+    }
+
+    [Fact]
+    public void SortByAscDesc_ThrowsExceptionForInvalidSortOrder()
+    {
+        // Arrange
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = "Canada" },
+            new Country { Name = "United States" },
+            new Country { Name = "Mexico" }
+        };
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => SortByAscDesc(countries, "invalid"));
+    }
+}
+
+In this example, I've created three xUnit test methods within the CountrySortingTests class. The first two tests, SortByAscDesc_SortsAscending and SortByAscDesc_SortsDescending, check if the method correctly sorts the countries in ascending and descending order, respectively. The third test, SortByAscDesc_ThrowsExceptionForInvalidSortOrder, ensures that an exception is thrown when an invalid sort order is provided.
+
+Adjust the test cases and expected outcomes based on your specific use case.
+User
+C#: Write a unit tests using XUnit for the method GetByLimit:  
+/// <summary>
+  /// Returns a list of countries limited by <paramref name="limit"/>.
+  /// </summary>
+  /// <param name="countries">Target countries list.</param>
+  /// <param name="limit">Returned countries are limited by this parameter.</param>
+  /// <returns>A list of countries limited by <paramref name="limit"/>.</returns>
+  /// <exception cref="ArgumentException"></exception>
+  public static List<Country> GetByLimit(List<Country> countries, int limit)
+  {
+      ValidateList(countries);
+      if (limit <= 0)
+          throw new ArgumentException(Constants.Exceptions.InvalidLimitNumber);
+
+      return countries.Take(limit).ToList();
+  }
+
+ValidateList code:
+   private static void ValidateList(List<Country> countries)
+   {
+       if (countries is null || !countries.Any())
+           throw new ArgumentNullException(nameof(countries));
+   }
+ChatGPT
+
+Sure! Here's an example of how you can write unit tests for the GetByLimit method using xUnit:
+
+csharp
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
+
+public class Country
+{
+    public string Name { get; set; }
+}
+
+public static class Constants
+{
+    public static class Exceptions
+    {
+        public const string InvalidLimitNumber = "Invalid limit number.";
+    }
+}
+
+public class CountryFilteringTests
+{
+    private static void ValidateList(List<Country> countries)
+    {
+        if (countries is null || !countries.Any())
+            throw new ArgumentNullException(nameof(countries));
+    }
+
+    private static List<Country> GetByLimit(List<Country> countries, int limit)
+    {
+        ValidateList(countries);
+        if (limit <= 0)
+            throw new ArgumentException(Constants.Exceptions.InvalidLimitNumber);
+
+        return countries.Take(limit).ToList();
+    }
+
+    [Fact]
+    public void GetByLimit_ReturnsLimitedCountries()
+    {
+        // Arrange
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = "Canada" },
+            new Country { Name = "United States" },
+            new Country { Name = "Mexico" },
+            new Country { Name = "Australia" }
+        };
+
+        int limit = 2;
+
+        // Act
+        List<Country> limitedCountries = GetByLimit(countries, limit);
+
+        // Assert
+        Assert.Equal(limit, limitedCountries.Count);
+        Assert.Equal("Canada", limitedCountries[0].Name);
+        Assert.Equal("United States", limitedCountries[1].Name);
+    }
+
+    [Fact]
+    public void GetByLimit_ThrowsExceptionForInvalidLimit()
+    {
+        // Arrange
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = "Canada" },
+            new Country { Name = "United States" },
+            new Country { Name = "Mexico" }
+        };
+
+        int invalidLimit = 0;
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => GetByLimit(countries, invalidLimit));
+    }
+}
+
+In this example, I've created two xUnit test methods within the CountryFilteringTests class. The first test, GetByLimit_ReturnsLimitedCountries, checks if the method correctly returns a list of countries limited by the provided limit value. The second test, GetByLimit_ThrowsExceptionForInvalidLimit, ensures that an exception is thrown when an invalid limit value is provided.
+
+Adjust the test cases and expected outcomes based on your specific use case.

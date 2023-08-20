@@ -1,4 +1,4 @@
-﻿namespace Validation_Project.Controllers
+﻿namespace Validation_Project
 {
     /// <summary>
     /// Global constants.
