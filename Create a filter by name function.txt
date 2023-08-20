@@ -1,0 +1,64 @@
+User
+C#: Create a function that accepts a string as a parameter and can filter by country `name/common`. 
+The filter should search for countries names that contains string from attributes (e.g. providing `st` as attribute I could find `Estonia`, providing `Sp` I could find `Spain`)
+search should be case insensitive (e.g., providing `sT` should find `Estonia`)
+Note: "countries" must be a parameter of the List type
+ChatGPT
+
+Sure, I can help you create a C# function that filters a list of country objects based on a search string. Here's an example of how you could implement this:
+
+csharp
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Country
+{
+    public string Name { get; set; }
+    public string CommonName { get; set; }
+}
+
+class Program
+{
+    static List<Country> FilterCountries(List<Country> countries, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            return countries; // Return all countries if search string is empty
+        }
+
+        searchString = searchString.ToLower(); // Convert search string to lowercase for case-insensitive search
+
+        return countries.Where(country =>
+            country.Name.ToLower().Contains(searchString) ||
+            country.CommonName.ToLower().Contains(searchString)
+        ).ToList();
+    }
+
+    static void Main(string[] args)
+    {
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = "Estonia", CommonName = "EST" },
+            new Country { Name = "Spain", CommonName = "ESP" },
+            new Country { Name = "United States", CommonName = "USA" },
+            new Country { Name = "Australia", CommonName = "AUS" },
+        };
+
+        Console.Write("Enter search string: ");
+        string searchString = Console.ReadLine();
+
+        List<Country> filteredCountries = FilterCountries(countries, searchString);
+
+        Console.WriteLine("\nFiltered Countries:");
+        foreach (var country in filteredCountries)
+        {
+            Console.WriteLine($"Name: {country.Name}, Common Name: {country.CommonName}");
+        }
+    }
+}
+
+In this example, the FilterCountries function takes a list of Country objects and a search string as parameters. It then performs a case-insensitive search for the search string within the Name and CommonName properties of each Country object. The filtered list of countries is returned.
+
+The Main method demonstrates how to use this function by taking user input for the search string and then displaying the filtered countries' names and common names.

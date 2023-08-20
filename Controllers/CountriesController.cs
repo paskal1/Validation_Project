@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace Validation_Project.Controllers
 {
@@ -42,6 +43,16 @@ namespace Validation_Project.Controllers
             {
                 return StatusCode(500);
             }
+        }
+
+        private static List<Country> FilterCountries(List<Country> countries, string searchString)
+        {
+            string searchLower = searchString.ToLower(CultureInfo.InvariantCulture);
+            return countries
+                .Where(country =>
+                    country.Name.ToLower(CultureInfo.InvariantCulture).Contains(searchLower) ||
+                    country.CommonName.ToLower(CultureInfo.InvariantCulture).Contains(searchLower))
+                .ToList();
         }
     }
 }
